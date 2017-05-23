@@ -1,0 +1,5 @@
+include Makefile.inc
+
+PKG_CPPFLAGS = $(MUMPS_I)
+PKG_CXXFLAGS = -std=c++11
+PKG_CFLAGS = -std=c99
