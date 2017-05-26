@@ -1,4 +1,4 @@
-useDynLib(fdaPDE)
+useDynLib(fdaPDE2)
 
 import(rgl)
 importFrom("grDevices", "heat.colors")

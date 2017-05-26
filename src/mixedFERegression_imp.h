@@ -9,8 +9,7 @@
 
 #include "R_ext/Print.h"
 
-#include "mpi.h"
-#include "dmumps_c.h"
+#include "../inst/include/dmumps_c.h"
 #define JOB_INIT -1
 #define JOB_END -2
 #define USE_COMM_WORLD -987654
@@ -158,11 +157,11 @@ void MixedFERegression<InputHandler,Integrator,ORDER>::computeDegreesOfFreedomEx
 	{
 		auto k = regressionData_.getObservationsIndices();
 		DMUMPS_STRUC_C id;
-		int myid, ierr;
-        int argc=0;
-        char ** argv= NULL;
-        MPI_Init(&argc,&argv);
-		ierr = MPI_Comm_rank(MPI_COMM_WORLD, &myid);
+		//int myid, ierr;
+        //int argc=0;
+        //char ** argv= NULL;
+        //MPI_Init(&argc,&argv);
+		//ierr = MPI_Comm_rank(MPI_COMM_WORLD, &myid);
 
 		id.sym=0;
 		id.par=1;
@@ -177,7 +176,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER>::computeDegreesOfFreedomEx
 		std::vector<int> irhs_sparse;
 		double* rhs_sparse= (double*)malloc(nlocations*sizeof(double));
 		
-		if( myid==0){
+		//if( myid==0){
 			id.n=2*nnodes;
 			for (int j=0; j<A_.outerSize(); ++j){
 				for (SpMat::InnerIterator it(A_,j); it; ++it){
@@ -186,7 +185,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER>::computeDegreesOfFreedomEx
 					a.push_back(it.value());
 				}
 			}
-		}
+		//}
 		id.nz=irn.size();
 		id.irn=irn.data();
 		id.jcn=jcn.data();
@@ -231,15 +230,15 @@ void MixedFERegression<InputHandler,Integrator,ORDER>::computeDegreesOfFreedomEx
 		id.job=JOB_END;
 		dmumps_c(&id);
 
-		if (myid==0){
+		//if (myid==0){
 			for (int i=0; i< nlocations; ++i){
 				//std::cout << "rhs_sparse" << rhs_sparse[i] << std::endl;
 				degrees+=rhs_sparse[i];
 			}
-		}
+		//}
 		free(rhs_sparse);
 
-		MPI_Finalize();
+		//MPI_Finalize();
 	}
 	// Case 2: Eigen
 	else{
